@@ -40,12 +40,25 @@ def count_valid_tests():
     return counter
 
 def operator_sequence_found(test_value, operand_list):
+    operator_list = ["/", "-"]
     my_operand_list = operand_list.copy()
     my_operand_list.append(test_value)
     current_value = test_value
     index = len(my_operand_list)-2
-    while current_value != operand_list[0]: # or we ran out of options
+    while current_value != operand_list[0]:
+        for op in operator_list:
+            if is_this_value_possible(do_one_operation(current_value, my_operand_list[index], op)):
+             current_value = do_one_operation(current_value, my_operand_list[index], op)
+             index -= 1
+            else:
+                continue
+
+
     return True
+
+def do_next():
+    # ugh idk
+    return
 
 def is_this_value_possible(my_float):
     return my_float.is_integer()
