@@ -14,16 +14,11 @@ box_right_character = "]"
 def display_list(my_list):
     print("--------------------------------------")
     for line in my_list:
-        print(line)
-    # print("######################################")
+        my_string = ""
+        for c in line:
+           my_string += c
+        print(my_string)
     print("\n")
-    with open("log.txt", 'a') as yay:
-        for line in my_list:
-            # my_string = ""
-            for c in line:
-                yay.writelines(c)
-            yay.writelines("\n")
-        yay.writelines("\n")
 
 
 def read_file(file_name):
@@ -57,11 +52,7 @@ def simulate_robot_route(my_warehouse_map_list, my_instruction_list):
         robot_coordinate_row,
         robot_coordinate_column,
     ) = get_robot_info(my_warehouse_map_list)
-    cou = 1
     for instruction in my_instruction_list:
-        with open("log.txt", 'a') as yay:
-            print(instruction)
-            yay.writelines(f" {instruction}  {cou}. ins\n")
         (
             robot_coordinate_row,
             robot_coordinate_column,
@@ -71,8 +62,6 @@ def simulate_robot_route(my_warehouse_map_list, my_instruction_list):
             instruction,
             my_warehouse_map_list,
         )
-        # display_list(my_warehouse_map_list)
-        cou += 1
 
 
 def count_characters(c, my_warehouse_map_list):
@@ -171,7 +160,7 @@ def doit(robot_coordinate_row, robot_coordinate_column, diff_y, my_warehouse_map
     next_coordinate_row = robot_coordinate_row + diff_y
     next_coordinate_column = robot_coordinate_column
     my_new_box_coordinates = list() # of x, y
-    my_box_coordinates = list() # of x, y all the boxes we didnt find in this iteration
+    my_box_coordinates = list() # of x, y all the boxes we found in previous iterations
     my_affected_coordinates = list()
     my_affected_coordinates.append((next_coordinate_row, next_coordinate_column))
     while (not found_a_wall) and len(my_affected_coordinates) > 0:
@@ -182,15 +171,10 @@ def doit(robot_coordinate_row, robot_coordinate_column, diff_y, my_warehouse_map
                     add_to_list(my_new_box_coordinates, (coo[0], coo[1] + 1))
                 else:
                     add_to_list(my_new_box_coordinates, (coo[0], coo[1] - 1))
-        # for coo in my_affected_coordinates:
-        #     if coo in my_new_box_coordinates:
-        #         my_affected_coordinates.remove(coo)
         for coo in my_affected_coordinates:
             if my_warehouse_map_list[coo[0]][coo[1]] == wall_character:
                 found_a_wall = True
                 break
-            # else:
-            #     my_affected_coordinates.remove(coo)
         my_affected_coordinates.clear()
         for box_coo in my_new_box_coordinates:
             my_affected_coordinates.append((box_coo[0] + diff_y, box_coo[1]))
@@ -200,13 +184,11 @@ def doit(robot_coordinate_row, robot_coordinate_column, diff_y, my_warehouse_map
     if found_a_wall:
         return robot_coordinate_row, robot_coordinate_column
 
-    #lets moooove boxes
     for box_coo in reversed(my_box_coordinates):
-        print(box_coo)
+        # print(box_coo)
         update_char_to(box_coo[0] + diff_y, box_coo[1], my_warehouse_map_list[box_coo[0]][box_coo[1]], my_warehouse_map_list)
         update_char_to(box_coo[0], box_coo[1], empty_space_character, my_warehouse_map_list)
-        display_list(my_warehouse_map_list)
-    #move robot
+
     update_char_to(
         robot_coordinate_row + diff_y,
         robot_coordinate_column,
@@ -219,6 +201,7 @@ def doit(robot_coordinate_row, robot_coordinate_column, diff_y, my_warehouse_map
         empty_space_character,
         my_warehouse_map_list,
     )
+
     return robot_coordinate_row + diff_y, robot_coordinate_column
 
 def add_to_list(my_list, my_element):
@@ -228,10 +211,10 @@ def add_to_list(my_list, my_element):
 def update_char_to(
         coordinate_row, coordinate_column, char_to_use, my_warehouse_map_list
 ):
-    print(f"old char: {my_warehouse_map_list[coordinate_row][coordinate_column]}")
+    # print(f"old char: {my_warehouse_map_list[coordinate_row][coordinate_column]}")
     my_warehouse_map_list[coordinate_row][coordinate_column] = char_to_use
-    print(f"new char: {my_warehouse_map_list[coordinate_row][coordinate_column]}")
-    print(f"row: {coordinate_row}, column: {coordinate_column}")
+    # print(f"new char: {my_warehouse_map_list[coordinate_row][coordinate_column]}")
+    # print(f"row: {coordinate_row}, column: {coordinate_column}")
 
 
 def get_robot_info(my_lab_map_list):  # x(row), y(column)  coordinates
@@ -242,10 +225,10 @@ def get_robot_info(my_lab_map_list):  # x(row), y(column)  coordinates
 
 def day15_part2():
     instruction_list = read_file("day15.txt")
-    # instruction_list = read_file("day15dbg2.txt")
     # instruction_list = read_file("day15small.txt")
-    # display_list(warehouse_map_list)
+    display_list(warehouse_map_list)
     simulate_robot_route(warehouse_map_list, instruction_list)
+    display_list(warehouse_map_list)
     # display_list(instruction_list)
     final_sum_2 = count_characters(box_left_character, warehouse_map_list)
     print("-----")

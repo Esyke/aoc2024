@@ -123,9 +123,7 @@ def get_robot_info(my_lab_map_list):  # x(row), y(column)  coordinates
 def day15_part1():
     instruction_list = read_file("day15.txt")
     # instruction_list = read_file("day15small.txt")
-    # display_list(warehouse_map_list)
     simulate_robot_route(warehouse_map_list, instruction_list)
-    # display_list(instruction_list)
     final_sum_1 = count_characters(box_character, warehouse_map_list)
     print("-----")
     print(final_sum_1)
