@@ -54,7 +54,6 @@ def read_file(file_name):
             for j in range(MAX_ROW):
                 if all[i][j] != ".":
                     antenna = Antenna(i, j, all[i][j])
-                    print(antenna)
                     if all[i][j] not in all_antennas.keys():
                         all_antennas[all[i][j]] = list()
                     all_antennas[all[i][j]].append(antenna)
@@ -79,7 +78,8 @@ def determine_antinodes(antennas_dict):
     for k, v in antennas_dict.items():
         for i in range(len(v)):
             for j in range(i+1, len(v)):
-                new_antinodes = get_antinodes(v[i], v[j])
+                # new_antinodes = get_antinodes(v[i], v[j])
+                new_antinodes = get_antinodes_2(v[i], v[j])
                 for n in new_antinodes:
                     antinodes_set.add(n)
 
@@ -92,9 +92,22 @@ def get_antinodes(antenna_1, antenna_2):
     for p in (p1, p2):
         if is_this_position_valid(p, MAX_COL, MAX_ROW):
             new_antinodes.append(p)
-    
     return new_antinodes
 
+def get_antinodes_2(antenna_1, antenna_2):
+    new_antinodes = list()
+    diff_point = antenna_1.position - antenna_2.position
+    next_p = antenna_1.position
+    while is_this_position_valid(next_p, MAX_COL, MAX_ROW):
+        new_antinodes.append(next_p)
+        next_p -= diff_point
+
+    next_p = antenna_2.position
+    while is_this_position_valid(next_p, MAX_COL, MAX_ROW):
+        new_antinodes.append(next_p)
+        next_p += diff_point
+
+    return new_antinodes
 
 def is_this_position_valid(pos: Position, max_col, max_row):
     if 0 <= pos.col < max_col and 0 <= pos.row < max_row:
@@ -113,6 +126,19 @@ def day8_part1():
     print("-----")
     print(final_sum_1)
 
+def day8_part2():
+    read_file("day8.txt")
+    # read_file("day8small.txt")
+    # display_dict(all_antennas)
+    # display_list(antinodes_set)
+    determine_antinodes(all_antennas)
+
+    final_sum_2 = len(antinodes_set)
+
+    print("-----")
+    print(final_sum_2)
+
 
 if __name__ == "__main__":
-    day8_part1()
+    # day8_part1()
+    day8_part2()
